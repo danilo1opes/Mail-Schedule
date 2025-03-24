@@ -1,11 +1,21 @@
-import { DateTimePicker, Nav, RichInput } from 'components';
-import { Button } from 'components/Button';
+import { FormProvider, useForm } from 'react-hook-form';
+import { Button, DateTimePicker, Nav, RichInput } from 'components';
+import { WriteNowResolver } from 'validations';
+import { IWriteNowForm } from 'interfaces';
 
 export function WriteNowPage() {
-  const { register, handleSubmit } = useForm();
+  const formMethods = useForm<IWriteNowForm>({ resolver: WriteNowResolver });
+  const {
+    formState: { errors },
+    register,
+    handleSubmit,
+  } = formMethods;
 
   function onSubmit(values: any) {
-    console.log(values);
+    console.log(
+      '~ file: WriteNowPage.tsx ~ line 9 ~ onSubmit ~ values',
+      values
+    );
   }
 
   return (
@@ -14,26 +24,46 @@ export function WriteNowPage() {
       <div className="container">
         <h1>Escrever Agora</h1>
 
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <label htmlFor="destinationName">Nome Completo</label>
-          <input {...register('destinationName')} type="text" />
-          <label htmlFor="destinationAddress">Email</label>
-          <input {...register('destinationAddress')} type="email" />
-          <label htmlFor="dueDate">Data</label>
-          <DateTimePicker />
-          <label htmlFor="subject">Assunto</label>
-          <input {...register('destinationAddress')} type="text" />
-          <label htmlFor="Body">Mensagem</label>
-          <RichInput />
-          <Button type="submit" variant="primary">
-            Enviar
-          </Button>
-        </form>
+        <FormProvider {...formMethods}>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <label htmlFor="destinationName">Nome Completo</label>
+            <input {...register('destinationName')} type="text" />
+            {errors?.destinationName?.message && (
+              <p className="error-text">{errors?.destinationName?.message}</p>
+            )}
+
+            <label htmlFor="destinationAddress">Email</label>
+            <input {...register('destinationAddress')} type="email" />
+            {errors?.destinationAddress?.message && (
+              <p className="error-text">
+                {errors?.destinationAddress?.message}
+              </p>
+            )}
+
+            <label htmlFor="dueDate">Data</label>
+            <DateTimePicker name="dueDate" />
+            {errors?.dueDate?.message && (
+              <p className="error-text">{errors?.dueDate?.message}</p>
+            )}
+
+            <label htmlFor="subject">Assunto</label>
+            <input {...register('subject')} type="text" />
+            {errors?.subject?.message && (
+              <p className="error-text">{errors?.subject?.message}</p>
+            )}
+
+            <label htmlFor="Body">Mensagem</label>
+            {errors?.body?.message && (
+              <p className="error-text">{errors?.body?.message}</p>
+            )}
+
+            <RichInput name="body" />
+            <Button type="submit" variant="primary">
+              Enviar
+            </Button>
+          </form>
+        </FormProvider>
       </div>
     </>
   );
-}
-
-function useForm(): { register: any; handleSubmit: any } {
-  throw new Error('Function not implemented.');
 }

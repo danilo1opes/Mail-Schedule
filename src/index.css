@@ -30,3 +30,7 @@ form label {
 form input {
   @apply w-full border border-gray-100 mb-1 p-2 rounded-md;
 }
+
+.error-text {
+  @apply text-red-600 text-sm py-1;
+}
