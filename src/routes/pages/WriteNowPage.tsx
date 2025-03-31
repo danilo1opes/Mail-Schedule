@@ -2,6 +2,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { Button, DateTimePicker, Nav, RichInput } from 'components';
 import { WriteNowResolver } from 'validations';
 import { IWriteNowForm } from 'interfaces';
+import { MailServices } from 'services';
 
 export function WriteNowPage() {
   const formMethods = useForm<IWriteNowForm>({ resolver: WriteNowResolver });
@@ -9,13 +10,19 @@ export function WriteNowPage() {
     formState: { errors },
     register,
     handleSubmit,
+    reset,
   } = formMethods;
 
-  function onSubmit(values: any) {
-    console.log(
-      '~ file: WriteNowPage.tsx ~ line 9 ~ onSubmit ~ values',
-      values
-    );
+  async function onSubmit(values: IWriteNowForm) {
+    const formData = {
+      ...values,
+      dueDate: values.dueDate ? values.dueDate.toISOString() : '',
+    };
+
+    const { status } = await MailServices.sendEmail(formData);
+    if (status === 201) {
+      reset();
+    }
   }
 
   return (

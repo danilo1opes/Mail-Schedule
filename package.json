@@ -12,6 +12,8 @@
     "@types/node": "^16.18.126",
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
+    "axios": "^1.8.4",
+    "axos": "^0.0.1",
     "classnames": "^2.5.1",
     "jodit-react": "^5.2.15",
     "react": "^19.0.0",
